@@ -23,6 +23,13 @@ class ACTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * @expectedException \InvalidArgumentException
+	 */
+	public function testConstructorException() {
+		$c = new Contact( '' );
+	}
+
+	/**
 	 * @dataProvider instanceArgs
 	 */
 	public function testInstance( $http_client_or_url, $token = null ) {
