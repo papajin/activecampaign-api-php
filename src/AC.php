@@ -4,17 +4,77 @@
 namespace papajin\ActiveCampaign;
 
 use GuzzleHttp\Client;
+use Psr\Http\Message\ResponseInterface;
 
 abstract class AC {
+
+	const API_URI = '/api/3/';
 
 	/**
 	 * @var Client
 	 */
 	protected $http_client;
 
+	/**
+	 * @var ResponseInterface
+	 */
+	protected $http_response;
+
 	public function __construct( $http_client )
 	{
-		$this->http_client = $http_client;
+		$this->httpClient( $http_client );
+	}
+
+	/**
+	 * @param Client|null $http_client
+	 *
+	 * @return Client|void
+	 */
+	public function httpClient( $http_client = null )
+	{
+		if( is_null( $http_client ) )
+			return $this->http_client;
+		elseif ( $http_client instanceof Client )
+			$this->http_client = $http_client;
+		else
+			throw new \InvalidArgumentException( '$http_client must be an instance of GuzzleHttp\Client' );
+	}
+
+	/**
+	 * Erase previous request result
+	 */
+	public function flushResponse()
+	{
+		$this->http_response = null;
+	}
+
+	/**
+	 * Original response instance
+	 *
+	 * @return ResponseInterface
+	 */
+	public function getRawResponse()
+	{
+		return $this->http_response;
+	}
+
+	/**
+	 * @param ResponseInterface $result
+	 * @param $expected_code
+	 *
+	 * @return mixed
+	 */
+	protected function isSuccess( $expected_code = 200 )
+	{
+		if( ! $this->http_response instanceof ResponseInterface )
+		    return false;
+		elseif(( is_array( $expected_code ) AND in_array( $this->http_response->getStatusCode(), $expected_code )) OR $expected_code == $this->http_response->getStatusCode())
+			return json_decode( $this->http_response->getBody() );
+
+		throw new \RuntimeException(
+			$this->http_response->getReasonPhrase(),
+			$this->http_response->getStatusCode()
+		);
 	}
 
 	/**
@@ -25,11 +85,11 @@ abstract class AC {
 	 */
 	public static function makeHTTPClient( $url, $token )
 	{
+		$base_url = rtrim( $url, '/' ) . '/' . ltrim( static::API_URI, '/' );
+
 		return new Client([
-			'base_url' => ['{url}/api/3/', ['url' => $url]],
-			'defaults' => [
-				'headers' => ['Api-Token' => $token]
-			]
+			'base_uri' => $base_url,
+			'headers' => [ 'Api-Token' => $token ]
 		]);
 	}
 
