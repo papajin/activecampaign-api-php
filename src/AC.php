@@ -90,17 +90,22 @@ abstract class AC {
 
 	public function __call( $name, $arguments = [] )
 	{
-		$name = '_' . $name;
+		$method = $this->methodName( $name, $arguments );
 
-		if( is_callable([ $this, $name ])) {
+		if( method_exists( $this, $method ) ) {
 			Throttle::__();
 
-			$this->{$name}( ...$arguments );
+			$this->{$method}( ...$arguments );
 
-			return $this->isSuccess( $this->expectedCode( ltrim( $name, '_' ) ) );
+			return $this->isSuccess( $this->expectedCode( $name ) );
 		}
 
-		throw new \BadMethodCallException( '$name method has not been implemented.' );
+		throw new \BadMethodCallException( $name . ' method has not been implemented.' );
+	}
+
+	protected function methodName( $method, &$params )
+	{
+		return '_' . $method;
 	}
 
 	protected function expectedCode( $function )
