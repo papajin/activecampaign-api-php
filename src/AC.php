@@ -40,6 +40,17 @@ abstract class AC {
 			throw new \InvalidArgumentException( '$http_client must be an instance of GuzzleHttp\Client' );
 	}
 
+	public function withClient( $http_client, $clean = true )
+	{
+		$copy = clone $this;
+
+		$copy->httpClient( $http_client );
+
+		if( $clean ) $copy->flushResponse();;
+
+		return $copy;
+	}
+
 	/**
 	 * Erase previous request result
 	 */
@@ -75,6 +86,26 @@ abstract class AC {
 			$this->http_response->getReasonPhrase(),
 			$this->http_response->getStatusCode()
 		);
+	}
+
+	public function __call( $name, $arguments = [] )
+	{
+		$name = '_' . $name;
+
+		if( is_callable([ $this, $name ])) {
+			Throttle::__();
+
+			$this->{$name}( ...$arguments );
+
+			return $this->isSuccess( $this->expectedCode( ltrim( $name, '_' ) ) );
+		}
+
+		throw new \BadMethodCallException( '$name method has not been implemented.' );
+	}
+
+	protected function expectedCode( $function )
+	{
+		return 200;
 	}
 
 	/**
