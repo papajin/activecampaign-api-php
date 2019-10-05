@@ -78,7 +78,7 @@ abstract class AC {
 	protected function isSuccess( $expected_code = 200 )
 	{
 		if( ! $this->http_response instanceof ResponseInterface )
-		    return false;
+		    return false; // Or throw an exception?
 		elseif(( is_array( $expected_code ) AND in_array( $this->http_response->getStatusCode(), $expected_code )) OR $expected_code == $this->http_response->getStatusCode())
 			return json_decode( $this->http_response->getBody() );
 
