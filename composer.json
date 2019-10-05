@@ -2,6 +2,8 @@
     "name": "papajin/activecampaign-api-php",
     "description": "This is unofficial PHP wrapper for the ActiveCampaign API v3. For the time being we start with Contact entity only.",
     "type": "library",
+    "keywords": ["activecampaign api", "contacts"],
+    "homepage": "https://github.com/papajin/activecampaign-api-php",
     "license": "MIT",
     "autoload": {
         "psr-4": {
