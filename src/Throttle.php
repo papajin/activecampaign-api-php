@@ -60,5 +60,7 @@ class Throttle {
 			$inst = new static;
 
 		$inst->call();
+
+		return $inst->calls;
 	}
 }

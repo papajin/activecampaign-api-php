@@ -5,6 +5,17 @@ use papajin\ActiveCampaign\Throttle;
 
 class ThrottleTest extends PHPUnit_Framework_TestCase {
 
+	public function testDelayed() {
+		$cnt = Throttle::LIMIT;
+
+		for ( ; $cnt > 0; $cnt-- )
+			Throttle::__();
+
+		sleep( Throttle::PERIOD );
+
+		$this->assertTrue( count( Throttle::__() ) == 1 );
+	}
+
 	/**
 	 * @dataProvider provider__
 	 *
