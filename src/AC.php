@@ -83,8 +83,8 @@ abstract class AC {
 			return json_decode( $this->http_response->getBody() );
 
 		throw new \RuntimeException(
-			$this->http_response->getReasonPhrase(),
-			$this->http_response->getStatusCode()
+			sprintf( 'Server responded with message "%s" and code "%d"', $this->http_response->getReasonPhrase(), $this->http_response->getStatusCode()),
+			400
 		);
 	}
 

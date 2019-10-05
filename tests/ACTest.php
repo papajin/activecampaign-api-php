@@ -30,6 +30,26 @@ class ACTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
+	 * @dataProvider mockInstanceWithException
+	 *
+	 * @param $api
+	 *
+	 * @expectedException \RuntimeException
+	 * @expectedExceptionCode 400
+	 */
+	public function testIsSuccess( $api ) {
+		$api->show(7);
+	}
+
+	/**
+	 * @expectedException \BadMethodCallException
+	 */
+	public function test__call() {
+		Contact::instance( 'https://account.api-us1.com', 'ffjhgjg' )
+			->badMethod();
+	}
+
+	/**
 	 * @dataProvider instanceArgs
 	 */
 	public function testInstance( $http_client_or_url, $token = null ) {
@@ -42,6 +62,16 @@ class ACTest extends PHPUnit_Framework_TestCase {
 		return [
 			['https://account.api-us1.com', 'ffjhgjg'],
 			[ new Client ]
+		];
+	}
+
+	public function mockInstanceWithException() {
+		$mock = new \GuzzleHttp\Handler\MockHandler( [ new \GuzzleHttp\Psr7\Response(204, [], '{}') ] );
+
+		$handler = \GuzzleHttp\HandlerStack::create( $mock );
+
+		return [
+			[ Contact::instance( new \GuzzleHttp\Client([ 'handler' => $handler, 'debug' => true ])) ]
 		];
 	}
 }
