@@ -82,4 +82,4 @@ catch ( RuntimeException $e ) {
 
 [source]: https://github.com/papajin/activecampaign-api-php
 [release]: https://packagist.org/packages/papajin/activecampaign-api-php
-[license]: https://github.com/papajin/activecampaign-api-php/LICENSE
+[license]: https://github.com/papajin/activecampaign-api-php/blob/master/LICENSE
