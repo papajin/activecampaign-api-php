@@ -112,13 +112,14 @@ class ContactTest extends PHPUnit_Framework_TestCase {
 	 */
 	public function testScoreValues( $id, $response ) {
 		$api = static::$contact->withClient( $this->mockClient( $response ) );
-		$result = $api->scoreValues( $id );
+		$api->scoreValues( $id );
 
 		$this->assertEquals( 200, $api->getRawResponse()->getStatusCode() );
 	}
 
 	/**
 	 * @dataProvider providerIndex
+	 * @param array $response_stack
 	 */
 	public function testIndex( $response_stack ) {
 		$api = static::$contact->withClient( $this->mockClient( $response_stack ) );
@@ -131,7 +132,6 @@ class ContactTest extends PHPUnit_Framework_TestCase {
 	public function testUpdateLists() {
 		$api = $this->getMockBuilder( Contact::class )
 					->disableOriginalConstructor()
-//		            ->setConstructorArgs([$this->mockClient( $response )])
 		            ->setMethods(['_updateListStatus'])
 		            ->getMock();
 
