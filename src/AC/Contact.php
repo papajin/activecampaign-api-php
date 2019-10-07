@@ -11,7 +11,7 @@ use \GuzzleHttp\Exception\ClientException;
  * Class Contact
  * @package papajin\ActiveCampaign\AC
  *
- * @method mixed index()
+ * @method mixed index(array $filters = [])
  * @method mixed show(integer $id)
  * @method mixed create(array $data)
  * @method mixed createOrUpdate(array $data)
@@ -55,11 +55,16 @@ class Contact extends AC {
 	 * This is useful for searching for contacts that match certain criteria - such as being part of a certain list,
 	 * or having a specific custom field value.
 	 *
+	 * @param array $filters Optional filters like ['email' => 'some_email_to_search@mail.com']
 	 * @throws ClientException
+	 * @throws \InvalidArgumentException
 	 */
-	protected function _index()
+	protected function _index( $filters = [] )
 	{
-		$this->http_response = $this->http_client->get( static::ENDPOINT );
+		if( !is_array( $filters ) )
+			throw new \InvalidArgumentException( '$filters must be an array' );
+
+		$this->http_response = $this->http_client->get( static::ENDPOINT, [ 'query' => $filters ] );
 	}
 
 	/**
