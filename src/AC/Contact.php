@@ -204,6 +204,7 @@ class Contact extends AC {
 			case 'create':
 				return 201;
 			case 'createOrUpdate':
+			case 'updateListStatus':
 				return [ 200, 201 ];
 			default:
 				return parent::expectedCode( $function );
