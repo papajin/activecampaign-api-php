@@ -1,10 +1,10 @@
 <?php
 
 
-use \papajin\ActiveCampaign\AC\Contact;
+use \papajin\ActiveCampaign\Http\Contact;
 use \GuzzleHttp\Client;
 
-class ACTest extends PHPUnit_Framework_TestCase {
+class HttpTest extends PHPUnit_Framework_TestCase {
 
 	public function testMakeHTTPClient() {
 		$client = Contact::makeHTTPClient(

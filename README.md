@@ -24,7 +24,7 @@ Please, refer to the [API docs][] for the parameters and responses structure.
 <?php
 require 'vendor/autoload.php';
 
-use papajin\ActiveCampaign\AC\Contact;
+use papajin\ActiveCampaign\Http\Contact;
 use \GuzzleHttp\Exception\ClientException;
 
 

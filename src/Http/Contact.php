@@ -1,10 +1,10 @@
 <?php
 
 
-namespace papajin\ActiveCampaign\AC;
+namespace papajin\ActiveCampaign\Http;
 
 
-use papajin\ActiveCampaign\AC;
+use papajin\ActiveCampaign\Http;
 use \GuzzleHttp\Exception\ClientException;
 
 /**
@@ -37,7 +37,7 @@ use \GuzzleHttp\Exception\ClientException;
  * @method mixed accountContacts(integer $id)
  * @method mixed automationEntryCounts(integer $id)
  */
-class Contact extends AC {
+class Contact extends Http {
 
 	const ENDPOINT = 'contacts';
 

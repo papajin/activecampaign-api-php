@@ -40,7 +40,7 @@ class ThrottleTest extends PHPUnit_Framework_TestCase {
 	public function provider__() {
 		return[
 			[ Throttle::LIMIT, Throttle::PERIOD, '<' ],
-			[ Throttle::LIMIT + 1, Throttle::PERIOD, '>' ],
+			[ Throttle::LIMIT * 2, Throttle::PERIOD, '>' ],
 			[ Throttle::LIMIT * 3, Throttle::PERIOD * 3, '<' ],
 			[ Throttle::LIMIT * 4, Throttle::PERIOD * 3, '>' ]
 		];

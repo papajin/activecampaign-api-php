@@ -1,7 +1,7 @@
 <?php
 
 
-use papajin\ActiveCampaign\AC\Contact;
+use papajin\ActiveCampaign\Http\Contact;
 
 
 class ContactTest extends PHPUnit_Framework_TestCase {
@@ -87,8 +87,9 @@ class ContactTest extends PHPUnit_Framework_TestCase {
 	}
 
 	/**
-	 * @covers \papajin\ActiveCampaign\AC\Contact::_link
+	 * @covers \papajin\ActiveCampaign\Http\Contact::_link
 	 * @dataProvider providerLink
+	 *
 	 * @param $id
 	 * @param $response
 	 */

@@ -6,7 +6,7 @@ namespace papajin\ActiveCampaign;
 use GuzzleHttp\Client;
 use Psr\Http\Message\ResponseInterface;
 
-abstract class AC {
+abstract class Http {
 
 	const API_URI = '/api/3/';
 
