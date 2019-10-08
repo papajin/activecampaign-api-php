@@ -185,7 +185,7 @@ class Contact extends Http {
 			 * @var $status
 			 */
 			try {
-				$row['result'] = (bool)$this->updateListStatus( $list, $contact, $status );
+				$row['result'] = (bool)$this->_updateListStatus( $list, $contact, $status );
 			}
 			catch ( \RuntimeException $e ) {
 				$row['result'] = false;
