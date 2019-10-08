@@ -86,6 +86,38 @@ class ContactTest extends PHPUnit_Framework_TestCase {
 		$this->assertObjectHasAttribute('contactList', $result );
 	}
 
+	public function testUpdate() {
+		$api = static::$contact->withClient( $this->mockClient([
+			new \GuzzleHttp\Psr7\Response(200, [], '{}')
+		]));
+
+		$api->update( 1, [] );
+
+		$response = $api->getRawResponse();
+
+		$this->assertEquals( 200, $response->getStatusCode() );
+	}
+
+	public function testDelete() {
+		$api = static::$contact->withClient( $this->mockClient([
+			new \GuzzleHttp\Psr7\Response(200, [], '[]')
+		]));
+
+		$res = $api->delete(1);
+		$this->assertEmpty( (array)$res );
+	}
+
+	/**
+	 * @expectedException \RuntimeException
+	 */
+	public function testDeleteException() {
+		$api = static::$contact->withClient( $this->mockClient([
+			new \GuzzleHttp\Psr7\Response(404, [], '{"message":"No result found for contact with id 1"}')
+		]));
+
+		$api->delete(1);
+	}
+
 	/**
 	 * @covers \papajin\ActiveCampaign\Http\Contact::_link
 	 * @dataProvider providerLink
@@ -137,9 +169,24 @@ class ContactTest extends PHPUnit_Framework_TestCase {
 		            ->getMock();
 
 		$api->expects($this->exactly( 3 ))
-		    ->method('_updateListStatus');
+		    ->method('_updateListStatus')
+			->withConsecutive(
+				['list' => 1, 'contact' => 1, 'status' => 1],
+				['list' => 2, 'contact' => 2, 'status' => 2],
+				['list' => 3, 'contact' => 3, 'status' => 1]
+			)
+			->willReturnOnConsecutiveCalls(false, true, true);
 
-		$api->updateLists([ [], [], [] ]);
+		$res = $api->updateLists([
+				['list' => 1, 'contact' => 1, 'status' => 1],
+				['list' => 2, 'contact' => 2, 'status' => 2],
+				['list' => 3, 'contact' => 3, 'status' => 1]
+			]);
+
+		for( $i = 0; $i < 3; $i++ )
+			$i
+				? $this->assertTrue( $res[ $i ][ 'result' ], "$i failed" )
+				: $this->assertFalse( $res[ $i ][ 'result' ], "$i failed" );
 	}
 
 	public function testUpdateListsWithException() {
