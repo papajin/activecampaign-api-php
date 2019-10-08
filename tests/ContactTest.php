@@ -139,7 +139,23 @@ class ContactTest extends PHPUnit_Framework_TestCase {
 		$api->expects($this->exactly( 3 ))
 		    ->method('_updateListStatus');
 
-		$api->updateLists( [[], [], []]);
+		$api->updateLists([ [], [], [] ]);
+	}
+
+	public function testUpdateListsWithException() {
+		$api = $this->getMockBuilder( Contact::class )
+		            ->disableOriginalConstructor()
+		            ->setMethods(['_updateListStatus'])
+		            ->getMock();
+
+		$api->expects( $this->once() )
+		    ->method('_updateListStatus')
+		    ->willThrowException( new \RuntimeException() );
+
+		$res = $api->updateLists([ [] ]);
+
+		$this->assertArrayHasKey( 'result', $res[0] );
+		$this->assertFalse( $res[0][ 'result' ] );
 	}
 
 	/** Providers */
