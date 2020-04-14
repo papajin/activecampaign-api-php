@@ -138,7 +138,7 @@ class ContactTest extends PHPUnit_Framework_TestCase {
 		$api->expects($this->exactly( 3 ))
 		    ->method('_updateListStatus');
 
-		$api->updateLists( [[], [], []]);
+		$api->updateLists( [["list" => null, "contact" => null, "status" => null], ["list" => null, "contact" => null, "status" => null], ["list" => null, "contact" => null, "status" => null]]);
 	}
 
 	/** Providers */
