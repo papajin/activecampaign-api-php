@@ -112,10 +112,6 @@ abstract class AC {
 
 		return '_' . $method;
 	}
-//	protected function methodName( $method, &$params )
-//	{
-//		return '_' . $method;
-//	}
 
 	protected function expectedCode( $function )
 	{
