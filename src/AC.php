@@ -105,12 +105,21 @@ abstract class AC {
 
 	protected function methodName( $method, &$params )
 	{
+		if( in_array( $method, $this->_linkMethods ) ) {
+			array_push( $params, $method );
+			$method = 'link';
+		}
+
 		return '_' . $method;
 	}
+//	protected function methodName( $method, &$params )
+//	{
+//		return '_' . $method;
+//	}
 
 	protected function expectedCode( $function )
 	{
-		return 200;
+		return ( 'create' == $function ) ? 201 : 200;
 	}
 
 	/**
@@ -146,6 +155,49 @@ abstract class AC {
 
 		return new static(
 			static::makeHTTPClient( $http_client_or_url, $token )
+		);
+	}
+
+	/* Common functions */
+
+	protected function _index( $filters = [] )
+	{
+		if( !is_array( $filters ) )
+			throw new \InvalidArgumentException( '$filters must be an array' );
+
+		$this->http_response = $this->http_client->get( static::ENDPOINT, [ 'query' => $filters ] );
+	}
+
+	protected function _show( $id )
+	{
+		$this->http_response = $this->http_client->get( static::ENDPOINT . '/' . $id );
+	}
+
+	protected function _create( $data )
+	{
+		$this->http_response = $this->http_client->post(
+			static::ENDPOINT,
+			[ 'body' => json_encode([ $this->inst_name => $data ]) ]
+		);
+	}
+
+	protected function _update( $id, $data )
+	{
+		$this->http_response = $this->http_client->put(
+			static::ENDPOINT . '/' . $id,
+			[ 'body' => json_encode([ $this->inst_name => $data ]) ]
+		);
+	}
+
+	protected function _delete( $id )
+	{
+		$this->http_response = $this->http_client->delete( static::ENDPOINT . '/' . $id );
+	}
+
+	protected function _link( $id, $param )
+	{
+		$this->http_response = $this->http_client->get(
+			sprintf( '%s/%d/%s', static::ENDPOINT, $id, $param )
 		);
 	}
 }

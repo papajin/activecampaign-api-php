@@ -41,60 +41,13 @@ class Contact extends AC {
 
 	const ENDPOINT = 'contacts';
 
-	private $_linkMethods = [
+	protected $inst_name = 'contact';
+
+	protected $_linkMethods = [
 		'bounceLogs', 'contactAutomations', 'contactData', 'contactGoals', 'contactLists', 'contactLogs', 'contactTags',
 		'contactDeals', 'deals', 'fieldValues', 'geoIps', 'notes', 'organization', 'plusAppend', 'trackingLogs',
 		'scoreValues', 'accountContacts', 'automationEntryCounts'
 	];
-
-	/**
-	 * List all contacts
-	 * @link https://developers.activecampaign.com/reference?_ga=2.90372441.273793142.1569778815-1266780364.1569778815#list-all-contacts List all contacts
-	 *
-	 * View many (or all) contacts by including their ID's or various filters.
-	 * This is useful for searching for contacts that match certain criteria - such as being part of a certain list,
-	 * or having a specific custom field value.
-	 *
-	 * @param array $filters Optional filters like ['email' => 'some_email_to_search@mail.com']
-	 * @throws ClientException
-	 * @throws \InvalidArgumentException
-	 */
-	protected function _index( $filters = [] )
-	{
-		if( !is_array( $filters ) )
-			throw new \InvalidArgumentException( '$filters must be an array' );
-
-		$this->http_response = $this->http_client->get( static::ENDPOINT, [ 'query' => $filters ] );
-	}
-
-	/**
-	 * Retrieve an existing contact
-	 * @link https://developers.activecampaign.com/reference?_ga=2.90372441.273793142.1569778815-1266780364.1569778815#get-contact Retrieve an existing contact
-	 *
-	 * @param int $id
-	 *
-	 * @throws ClientException
-	 */
-	protected function _show( $id )
-	{
-		$this->http_response = $this->http_client->get( static::ENDPOINT . '/' . $id );
-	}
-
-	/**
-	 * Create a contact
-	 * @link https://developers.activecampaign.com/reference?_ga=2.90372441.273793142.1569778815-1266780364.1569778815#create-contact Create a contact
-	 *
-	 * @param array $data
-	 *              
-	 * @throws ClientException
-	 */
-	protected function _create( $data )
-	{
-		$this->http_response = $this->http_client->post(
-			static::ENDPOINT,
-			[ 'body' => json_encode([ 'contact' => $data ]) ]
-		);
-	}
 
 	/**
 	 * Create or update contact
@@ -108,7 +61,7 @@ class Contact extends AC {
 	{
 		$this->http_response = $this->http_client->post(
 			'contact/sync',
-			[ 'body' => json_encode([ 'contact' => $data ]) ]
+			[ 'body' => json_encode([ $this->inst_name => $data ]) ]
 		);
 	}
 
@@ -127,47 +80,6 @@ class Contact extends AC {
 		$this->http_response = $this->http_client->post(
 			'contactLists',
 			[ 'body' => sprintf('{"contactList": {"list": %d, "contact": %d, "status": %d}}', $list, $contact, $status) ]
-		);
-	}
-
-	/**
-	 * Update a contact
-	 * @link https://developers.activecampaign.com/reference?_ga=2.90372441.273793142.1569778815-1266780364.1569778815#update-a-contact Update a contact
-	 *
-	 * @param array $data
-	 *
-	 * @throws ClientException
-	 */
-	protected function _update( $id, $data )
-	{
-		$this->http_response = $this->http_client->put(
-			static::ENDPOINT . '/' . $id,
-			[ 'body' => json_encode([ 'contact' => $data ]) ]
-		);
-	}
-
-	/**
-	 * Delete an existing contact
-	 * @link https://developers.activecampaign.com/reference?_ga=2.90372441.273793142.1569778815-1266780364.1569778815#delete-contact Delete an existing contact
-	 *
-	 * @param int $id
-	 *
-	 * @throws ClientException
-	 */
-	protected function _delete( $id )
-	{
-		$this->http_response = $this->http_client->delete( static::ENDPOINT . '/' . $id );
-	}
-
-	/**
-	 * Retrieve a contacts data from the provided link ($param)
-	 *
-	 * @throws ClientException
-	 */
-	protected function _link( $id, $param )
-	{
-		$this->http_response = $this->http_client->get(
-			sprintf( '%s/%d/%s', static::ENDPOINT, $id, $param )
 		);
 	}
 
@@ -199,25 +111,9 @@ class Contact extends AC {
 
 	protected function expectedCode( $function )
 	{
-		switch ( $function )
-		{
-			case 'create':
-				return 201;
-			case 'createOrUpdate':
-			case 'updateListStatus':
-				return [ 200, 201 ];
-			default:
-				return parent::expectedCode( $function );
-		}
-	}
+		if( 'createOrUpdate' == $function OR 'updateListStatus' == $function )
+			return [ 200, 201 ];
 
-	protected function methodName( $method, &$params )
-	{
-		if( in_array( $method, $this->_linkMethods ) ) {
-			array_push( $params, $method );
-			$method = 'link';
-		}
-
-		return parent::methodName( $method, $params );
+		return parent::expectedCode( $function );
 	}
 }
