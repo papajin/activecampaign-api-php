@@ -111,7 +111,7 @@ class Contact extends AC {
 
 	protected function expectedCode( $function )
 	{
-		if( 'createOrUpdate' == $function OR 'updateListStatus' == $function )
+		if( in_array( $function, ['createOrUpdate', 'updateListStatus', 'create'] ) )
 			return [ 200, 201 ];
 
 		return parent::expectedCode( $function );
