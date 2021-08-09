@@ -20,6 +20,8 @@ use \GuzzleHttp\Exception\ClientException;
  * @method mixed listAutomations(integer $id)
  * @method mixed addToAutomation( integer $contact, integer $automation )
  * @method mixed removeFromAutomation( integer $contactAutomationId )
+ * @method mixed addTagToContact( integer $contact, integer $tag )
+ * @method mixed removeTagFromContact( integer $contactTagId )
  * @method mixed bounceLogs(integer $id)
  * @method mixed contactAutomations(integer $id)
  * @method mixed contactData(integer $id)
@@ -98,6 +100,19 @@ class Contact extends AC {
 		$this->http_response = $this->http_client->delete( 'contactAutomations/' . $id );
 	}
 
+	protected function _addTagToContact( $contact, $tag )
+	{
+		$this->http_response = $this->http_client->post(
+			'contactTags',
+			[ 'body' => sprintf('{"contactTag": {"contact": %d, "tag": %d}}', $contact, $tag) ]
+		);
+	}
+
+	protected function _removeTagFromContact( $id )
+	{
+		$this->http_response = $this->http_client->delete( 'contactTags/' . $id );
+	}
+
 	/**
 	 * @param array $data
 	 * @return array
@@ -126,7 +141,7 @@ class Contact extends AC {
 
 	protected function expectedCode( $function )
 	{
-		if( in_array( $function, ['createOrUpdate', 'updateListStatus', 'create', 'addToAutomation'] ) )
+		if( in_array( $function, ['createOrUpdate', 'updateListStatus', 'create', 'addToAutomation', 'addTagToContact'] ) )
 			return [ 200, 201 ];
 
 		return parent::expectedCode( $function );
