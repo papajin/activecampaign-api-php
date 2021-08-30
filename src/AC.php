@@ -115,7 +115,7 @@ abstract class AC {
 
 	protected function expectedCode( $function )
 	{
-		return ( 'create' == $function ) ? 201 : 200;
+		return ( 'create' == $function ) ? [ 200, 201 ] : 200;
 	}
 
 	/**
